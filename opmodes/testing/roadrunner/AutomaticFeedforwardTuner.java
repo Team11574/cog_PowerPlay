@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
 import java.util.ArrayList;
 import java.util.List;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
 import incognito.cog.util.roadrunner.LoggingUtil;
 import incognito.cog.util.roadrunner.RegressionUtil;
 import incognito.teamcode.config.DriveConstants;

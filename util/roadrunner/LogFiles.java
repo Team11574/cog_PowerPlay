@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Objects;
 
 import fi.iki.elonen.NanoHTTPD;
-import incognito.cog.component.drive.SampleMecanumDrive;
-import incognito.cog.component.drive.SampleTankDrive;
-import incognito.cog.component.drive.StandardTrackingWheelLocalizer;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleTankDrive;
+import incognito.cog.hardware.component.drive.StandardTrackingWheelLocalizer;
 import incognito.teamcode.config.DriveConstants;
 
 public final class LogFiles {

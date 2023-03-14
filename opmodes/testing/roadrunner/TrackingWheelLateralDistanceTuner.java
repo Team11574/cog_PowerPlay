@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
-import incognito.cog.component.drive.StandardTrackingWheelLocalizer;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.StandardTrackingWheelLocalizer;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s

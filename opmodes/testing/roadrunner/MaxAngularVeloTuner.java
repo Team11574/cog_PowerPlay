@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.Objects;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
 
 /**
  * This routine is designed to calculate the maximum angular velocity your bot can achieve under load.

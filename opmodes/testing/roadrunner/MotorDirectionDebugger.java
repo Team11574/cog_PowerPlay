@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
 
 /**
  * This is a simple teleop routine for debugging your motor configuration.

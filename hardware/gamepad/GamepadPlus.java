@@ -1,4 +1,4 @@
-package incognito.cog.control;
+package incognito.cog.hardware.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 

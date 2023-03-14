@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.List;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
 import incognito.teamcode.config.DriveConstants;
 
 /*

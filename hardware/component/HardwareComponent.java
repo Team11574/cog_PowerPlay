@@ -1,10 +1,13 @@
-package incognito.cog.component;
+package incognito.cog.hardware.component;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public abstract class HardwareComponent extends Component {
+    protected HardwareMap hardwareMap;
+    protected Telemetry telemetry;
+
     public HardwareComponent(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
         this.hardwareMap = hardwareMap;

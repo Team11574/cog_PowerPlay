@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.MovingStatistics;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
 
-import incognito.cog.component.drive.SampleMecanumDrive;
+import incognito.cog.hardware.component.drive.SampleMecanumDrive;
 import incognito.teamcode.config.DriveConstants;
 
 /*

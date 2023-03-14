@@ -1,4 +1,4 @@
-package incognito.cog.component.drive;
+package incognito.cog.hardware.component.drive;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 

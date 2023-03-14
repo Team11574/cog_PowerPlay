@@ -1,4 +1,4 @@
-package incognito.cog.component.servo;
+package incognito.cog.hardware.component.servo;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
-import incognito.cog.component.HardwareComponent;
+import incognito.cog.hardware.component.HardwareComponent;
 
 public class SetServo extends HardwareComponent {
     protected Servo servo;

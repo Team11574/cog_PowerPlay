@@ -1,4 +1,4 @@
-package incognito.cog.component.drive;
+package incognito.cog.hardware.component.drive;
 
 import static incognito.cog.util.Generic.clamp;
 import static incognito.cog.util.Generic.midpoint;

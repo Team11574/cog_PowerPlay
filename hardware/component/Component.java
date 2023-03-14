@@ -1,4 +1,4 @@
-package incognito.cog.component;
+package incognito.cog.hardware.component;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

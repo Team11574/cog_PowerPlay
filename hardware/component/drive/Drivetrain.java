@@ -1,4 +1,4 @@
-package incognito.cog.component.drive;
+package incognito.cog.hardware.component.drive;
 
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;

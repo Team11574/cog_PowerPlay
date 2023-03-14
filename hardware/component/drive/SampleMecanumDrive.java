@@ -1,4 +1,4 @@
-package incognito.cog.component.drive;
+package incognito.cog.hardware.component.drive;
 
 import androidx.annotation.NonNull;
 
@@ -55,23 +55,26 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    private TrajectorySequenceRunner trajectorySequenceRunner;
+    private final TrajectorySequenceRunner trajectorySequenceRunner;
 
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
-    private TrajectoryFollower follower;
+    private final TrajectoryFollower follower;
 
-    private DcMotorEx DT_frontLeft_M, DT_backLeft_M, DT_backRight_M, DT_frontRight_M;
-    private List<DcMotorEx> motors;
+    private final DcMotorEx DT_frontLeft_M;
+    private final DcMotorEx DT_backLeft_M;
+    private final DcMotorEx DT_backRight_M;
+    private final DcMotorEx DT_frontRight_M;
+    private final List<DcMotorEx> motors;
 
-    private IMU imu;
-    private VoltageSensor batteryVoltageSensor;
+    private final IMU imu;
+    private final VoltageSensor batteryVoltageSensor;
 
-    private List<Integer> lastEncPositions = new ArrayList<>();
-    private List<Integer> lastEncVels = new ArrayList<>();
+    private final List<Integer> lastEncPositions = new ArrayList<>();
+    private final List<Integer> lastEncVels = new ArrayList<>();
 
-    private HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
     private Telemetry telemetry;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {

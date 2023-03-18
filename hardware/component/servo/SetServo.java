@@ -98,6 +98,10 @@ public class SetServo extends HardwareComponent {
         }
     }
 
+    public int getSetPositionCount() {
+        return positions.size();
+    }
+
 
     @Override
     protected void initializeHardware() {

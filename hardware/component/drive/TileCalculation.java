@@ -334,6 +334,7 @@ public class TileCalculation {
      * @param traj Trajectory to add.
      */
     public void addTrajectory(Trajectory traj) {
+        if (traj == null) return;
         if (sequenceBuilder == null)
             sequenceBuilder = drivetrain.trajectorySequenceBuilder(lastPose);
         sequenceBuilder.addTrajectory(traj);
@@ -406,6 +407,7 @@ public class TileCalculation {
     }
 
     public void finalizeTrajectory() {
+        if (finalizingTrajectory == null) return;
         addTrajectory(finalizingTrajectory);
         lastTrajectory = finalizingTrajectory;
         finalizingTrajectory = null;

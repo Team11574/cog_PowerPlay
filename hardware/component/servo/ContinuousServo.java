@@ -7,10 +7,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ContinuousServo extends SetServo {
     //private Servo servo;
-    private final double startPosition;
-    private final double lowerBound;
-    private final double upperBound;
-    private double offsetFactor = 1;
+    protected final double startPosition;
+    protected final double lowerBound;
+    protected final double upperBound;
+    protected double offsetFactor = 1;
 
     public ContinuousServo(HardwareMap hardwareMap, Telemetry telemetry, Servo crServo, double startPos) {
         this(hardwareMap, telemetry, crServo, startPos, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);

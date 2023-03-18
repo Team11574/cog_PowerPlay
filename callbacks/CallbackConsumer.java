@@ -28,4 +28,9 @@ public class CallbackConsumer<T> implements Callback<Consumer<T>> {
     public boolean isCancelled() {
         return cancelled;
     }
+
+    @Override
+    public void then(Consumer<T> callback) {
+
+    }
 }

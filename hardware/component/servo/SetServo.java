@@ -69,7 +69,11 @@ public class SetServo extends HardwareComponent {
     }
 
     public void toggle() {
-        currentPositionIndex++;
+        shiftPositions(1);
+    }
+
+    public void shiftPositions(int count) {
+        currentPositionIndex += count;
         currentPositionIndex %= positions.size();
         goToSetPosition(currentPositionIndex);
     }

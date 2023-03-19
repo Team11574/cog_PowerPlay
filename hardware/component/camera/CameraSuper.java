@@ -31,13 +31,17 @@ public class CameraSuper extends HardwareComponent {
      */
     public void stopCamera() {
         isStreaming = false;
-        cvCamera.stopStreaming();
+        //cvCamera.stopStreaming();
+        cvCamera.pauseViewport();
         pipeline.stop();
     }
 
     public void startCamera() {
         isStreaming = true;
-        cvCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        //cvCamera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        // Change from stop/start streaming to pause/resume viewport to fix problem with
+        // the camera not restarting after being stopped.
+        cvCamera.resumeViewport();
         pipeline.start();
     }
 

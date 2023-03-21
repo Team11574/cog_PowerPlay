@@ -138,8 +138,8 @@ public class TileCalculation {
     }
 
     public enum Junction {
-        TOP_LEFT,
         TOP_RIGHT,
+        TOP_LEFT,
         BOTTOM_LEFT,
         BOTTOM_RIGHT,
         GROUND,
@@ -477,6 +477,24 @@ public class TileCalculation {
                 .build();
         finalizeTrajectory();
         addTrajectory(moveToJunction);
+    }
+
+    public Junction facingJunctionHeight() {
+        return facingJunctionHeight(targetTile);
+    }
+
+    public Junction facingJunctionHeight(Double heading) {
+        return facingJunctionHeight(targetTile, heading);
+    }
+
+    public Junction facingJunctionHeight(Tile tile) {
+        return facingJunctionHeight(tile, lastPose.getHeading());
+    }
+
+    public Junction facingJunctionHeight(Tile tile, Double heading) {
+        int facingJunction = (int) Math.round((heading - 45) / 90) % 4;
+        return Junction.values()[facingJunction].getHeightByDirection(tile);
+
     }
 
     /**

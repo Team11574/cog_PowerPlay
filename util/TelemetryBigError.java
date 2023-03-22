@@ -4,15 +4,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.File;
 import java.util.ArrayList;
 
 public class TelemetryBigError {
     static boolean initialized = false;
-    static String[] errorMessages;
+    static String[] errorMessages = "  █████╗\n ██████║\n██╔═███║\n╚═╝ ███║\n    ███║\n    ███║\n    ███║\n███████████╗\n╚══════════╝\n\n █████████╗\n██╔══════██╗\n╚═╝     ███║\n     ████╔═╝\n   ████╔═╝\n ███╔══╝\n███╔╝\n███████████╗\n╚══════════╝\n\n █████████╗\n██╔══════██╗\n╚═╝      ██║\n     █████╔╝\n         ██╗\n         ██║\n██       ██║\n╚█████████╔╝\n ╚════════╝".split("\n\n");
     static Telemetry telemetry;
     static ElapsedTime time;
     static int i;
@@ -25,27 +21,6 @@ public class TelemetryBigError {
         telemetry = tel;
         time = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         initialized = true;
-        try {
-            // Read the file BigNumbers.txt and split it by double newlines
-            BufferedReader reader = new BufferedReader(new FileReader("incognito/cog/util/BigNumbers.txt"));
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            String ls = System.getProperty("line.separator");
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-                stringBuilder.append(ls);
-            }
-            // delete the last new line separator
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            reader.close();
-
-            String content = stringBuilder.toString();
-            errorMessages = content.split("\n\n");
-        } catch (IOException e) {
-            telemetry.addLine("Error reading error messages.");
-            telemetry.addLine(new File("").getAbsolutePath());
-            telemetry.addLine(System.getProperty("user.dir"));
-        }
     }
 
     public static void raise(int errorCode) {

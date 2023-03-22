@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 
 public class TelemetryBigError {
@@ -42,6 +43,8 @@ public class TelemetryBigError {
             errorMessages = content.split("\n\n");
         } catch (IOException e) {
             telemetry.addLine("Error reading error messages.");
+            telemetry.addLine(new File("").getAbsolutePath());
+            telemetry.addLine(System.getProperty("user.dir"));
         }
     }
 

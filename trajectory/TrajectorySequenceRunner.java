@@ -50,8 +50,9 @@ public class TrajectorySequenceRunner {
 
     private TrajectorySequence currentTrajectorySequence;
     private double currentSegmentStartTime;
-    private int currentSegmentIndex;
-    private int lastSegmentIndex;
+    // ADDED BY US
+    private int currentSegmentIndex = -1;
+    private int lastSegmentIndex = -2;
 
     private Pose2d lastPoseError = new Pose2d();
 
@@ -108,6 +109,9 @@ public class TrajectorySequenceRunner {
 
     // ADDED BY US
     public int getCurrentTrajectorySize() {
+        if (currentTrajectorySequence == null) {
+            return 0;
+        }
         return currentTrajectorySequence.size();
     }
 
@@ -135,6 +139,9 @@ public class TrajectorySequenceRunner {
                 remainingMarkers.clear();
 
                 currentTrajectorySequence = null;
+                // ADDED BY US
+                currentSegmentIndex = -1;
+                lastSegmentIndex = -2;
             }
 
             if (currentTrajectorySequence == null)

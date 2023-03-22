@@ -50,7 +50,7 @@ public class TelemetryBigError {
     }
 
     public static void raise(int errorCode, double duration) {
-        if (initialized) return;
+        if (!initialized) return;
         errorCodes.add(errorCode-1);
         errorDurations.add(duration);
         startTimes.add(time.time());

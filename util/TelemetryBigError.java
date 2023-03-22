@@ -24,7 +24,7 @@ public class TelemetryBigError {
     }
 
     public static void raise(int errorCode) {
-        raise(errorCode, 1000);
+        raise(errorCode, 3000);
     }
 
     public static void raise(int errorCode, double duration) {
@@ -44,7 +44,9 @@ public class TelemetryBigError {
             }
             double duration = errorDurations.get(i);
             double startTime = startTimes.get(i);
-            telemetry.addLine(errorMessages[errorCode]);
+            for (String line : errorMessages[errorCode].split("\n")) {
+                telemetry.addLine(line);
+            }
             if (time.time() > startTime + duration) {
                 errorCodes.remove(i);
                 errorDurations.remove(i);

@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class TelemetryBigError {
@@ -26,11 +26,20 @@ public class TelemetryBigError {
         initialized = true;
         try {
             // Read the file BigNumbers.txt and split it by double newlines
-            errorMessages = String.join("\n",
-                    Files.readAllLines(
-                            Paths.get("incognito/cog/util/BigNumbers.txt")
-                    )
-            ).split("\n\n");
+            BufferedReader reader = new BufferedReader(new FileReader("incognito/cog/util/BigNumbers.txt"));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            String ls = System.getProperty("line.separator");
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
+            // delete the last new line separator
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+            reader.close();
+
+            String content = stringBuilder.toString();
+            errorMessages = content.split("\n\n");
         } catch (IOException e) {
             telemetry.addLine("Error reading error messages.");
         }

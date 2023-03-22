@@ -101,6 +101,21 @@ public class TrajectorySequenceRunner {
         currentTrajectorySequence = trajectorySequence;
     }
 
+    // ADDED BY US
+    public int getCurrentSegmentIndex() {
+        return currentSegmentIndex;
+    }
+
+    // ADDED BY US
+    public int getCurrentTrajectorySize() {
+        return currentTrajectorySequence.size();
+    }
+
+    // ADDED BY US
+    public int getLastSegmentIndex() {
+        return lastSegmentIndex;
+    }
+
     public @Nullable
     DriveSignal update(Pose2d poseEstimate, Pose2d poseVelocity) {
         Pose2d targetPose = null;

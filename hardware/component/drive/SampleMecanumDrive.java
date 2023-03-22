@@ -204,8 +204,27 @@ public class SampleMecanumDrive extends MecanumDrive {
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
     }
 
+    // ADDED BY US
     public void modifyTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
         trajectorySequenceRunner.modifyTrajectorySequenceAsync(trajectorySequence);
+    }
+
+    // ADDED BY US
+    // Current index of the trajectory sequence
+    public int getCurrentSegmentIndex() {
+        return trajectorySequenceRunner.getCurrentSegmentIndex();
+    }
+
+    // ADDED BY US
+    // Length of the current trajectory sequence
+    public int getCurrentSegmentSize() {
+        return trajectorySequenceRunner.getCurrentTrajectorySize();
+    }
+
+    // ADDED BY US
+    // Previous (already run) index of the trajectory sequence
+    public int getLastSegmentIndex() {
+        return trajectorySequenceRunner.getLastSegmentIndex();
     }
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {

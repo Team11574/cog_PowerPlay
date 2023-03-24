@@ -13,6 +13,10 @@ public class Generic {
         else return value;
     }
 
+    public static int roundToFactor(double value, int factor) {
+        return (int) (factor * Math.round(value / factor));
+    }
+
     /**
      * Find the Vector2d that is the midpoint between two Vector2d.
      *

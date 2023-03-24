@@ -217,7 +217,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     // ADDED BY US
     // Length of the current trajectory sequence
-    public int getCurrentSegmentSize() {
+    public int getCurrentTrajectorySize() {
         return trajectorySequenceRunner.getCurrentTrajectorySize();
     }
 

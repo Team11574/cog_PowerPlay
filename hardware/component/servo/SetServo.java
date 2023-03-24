@@ -36,6 +36,10 @@ public class SetServo extends HardwareComponent {
         initializeHardware();
     }
 
+    public void setPosition(double position) {
+        servo.setPosition(position);
+    }
+
     public void addSetPositions(double[] newPositions) {
         for (double position : newPositions) {
             positions.add(position);
@@ -57,7 +61,7 @@ public class SetServo extends HardwareComponent {
         if (index >= positions.size() || index < 0) {
             telemetry.addLine("Servo undefined set position!");
         } else {
-            servo.setPosition(positions.get(index));
+            setPosition(positions.get(index));
             if (updateLastPosition)
                 lastPosition = positions.get(index);
             currentPositionIndex = index;
@@ -65,7 +69,7 @@ public class SetServo extends HardwareComponent {
     }
 
     public void goToLastPosition() {
-        servo.setPosition(lastPosition);
+        setPosition(lastPosition);
     }
 
     public void toggle() {
@@ -85,7 +89,7 @@ public class SetServo extends HardwareComponent {
         return currentPositionIndex;
     }
 
-    public double getCurrentPosition() {
+    public double getPosition() {
         return servo.getPosition();
     }
 

@@ -30,4 +30,17 @@ public class Generic {
                 (first.getY() + second.getY()) / 2
         );
     }
+
+    /**
+     * Get the center of the tile at the given x, y coordinate
+     * @param x A double value for field x coordinate
+     * @param y A double value for field y coordinate
+     * @return double[] {xIndex, yIndex}
+     */
+    public static int[] getTileIndex(double x, double y) {
+        return new int[] {
+                (Generic.roundToFactor(x + 12 + 72, 24) - 12) / 24 - 1,
+                (Generic.roundToFactor(y + 12 + 72, 24) - 12) / 24 - 1
+        };
+    }
 }

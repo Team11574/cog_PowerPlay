@@ -76,11 +76,23 @@ public class MotorGroup extends HardwareComponent {
         return Math.signum(lastPower);
     }
 
+    public DcMotor.RunMode getMode() {
+        return motors[0].getMode();
+    }
+
+    public boolean isRunToPosition() {
+        return getMode() == DcMotorEx.RunMode.RUN_TO_POSITION;
+    }
+
+    public boolean isRunUsingEncoder() {
+        return getMode() == DcMotorEx.RunMode.RUN_USING_ENCODER;
+    }
+
     public void setPower(double power) {
         if (disabled)
             return;
 
-        if (power == 0 && motors[0].getMode() == DcMotorEx.RunMode.RUN_TO_POSITION) {
+        if (power == 0 && getMode() == DcMotorEx.RunMode.RUN_TO_POSITION) {
             return;
         }
         lastPower = power;
@@ -152,7 +164,7 @@ public class MotorGroup extends HardwareComponent {
         setTargetPosition(setPositions.get(setPosition));
     }
 
-    public boolean goToPositionConstant(VerticalSlide.SetPosition index) {
+    public boolean goToPositionConstant(VerticalSlide.Position index) {
         return goToPositionConstant(index.ordinal());
     }
 

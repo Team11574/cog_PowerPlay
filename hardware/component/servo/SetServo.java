@@ -2,6 +2,7 @@ package incognito.cog.hardware.component.servo;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -9,12 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import incognito.cog.hardware.component.HardwareComponent;
+import incognito.teamcode.config.GenericConstants;
 
 public class SetServo extends HardwareComponent {
     protected Servo servo;
     protected List<Double> positions;
     protected int currentPositionIndex;
     protected double lastPosition;
+    protected double lastPositionInternalTimer;
+
+    protected ElapsedTime moveTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
     public SetServo(HardwareMap hardwareMap, Telemetry telemetry, Servo clawServo,
                     double position) {
@@ -37,9 +42,14 @@ public class SetServo extends HardwareComponent {
     }
 
     public void setPosition(double position) {
+        moveTimer.reset();
+        lastPositionInternalTimer = getPosition();
         servo.setPosition(position);
     }
 
+    public boolean atSetPosition(double waitTime) {
+        return moveTimer.time() >= waitTime;
+    }
     public void addSetPositions(double[] newPositions) {
         for (double position : newPositions) {
             positions.add(position);

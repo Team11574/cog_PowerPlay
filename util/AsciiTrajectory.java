@@ -4,6 +4,8 @@ package incognito.cog.util;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 */
 
+import static incognito.teamcode.robot.TileMovementPretty.MoveDirection.J_UP_LEFT;
+
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -16,11 +18,8 @@ import java.util.List;
 
 import incognito.teamcode.robot.TileMovementPretty;
 
-/* UNCOMMENT THIS
-import incognito.teamcode.robot.TileMovementPretty;
- */
-
 //import incognito.teamcode.robot.TileMovementPretty;
+
 
 public class AsciiTrajectory {
     HashMap<String, String> chars = new HashMap<>();
@@ -30,32 +29,26 @@ public class AsciiTrajectory {
     TileMovementPretty.MoveDirection lastDirection;
     List<List<String>> tiles = new ArrayList<>();
 
-    AsciiTrajectory() {
+    public AsciiTrajectory() {
         initializeChars();
         resetTiles();
     }
 
     public void initializeChars() {
-        /*putChar("b_horizontal", "══", false);
-        putChar("b_right_wall", "║", false);
-        putChar("b_left_wall", "║", true);
-        putChar("b_top_left", "╔═", false);
-        putChar("b_top_right", "╗", false);
-        putChar("b_bottom_left", "╚═", false);
-        putChar("b_bottom_right", "╝", false);*/
         setPad(" ");
 
+        setChar("b_horizontal", "══", false);
+        setChar("b_right_wall", "║", false);
+        setChar("b_left_wall", "║", true);
+        setChar("b_top_left", "╔═", false);
+        setChar("b_top_right", "╗", false);
+        setChar("b_bottom_left", "╚═", false);
+        setChar("b_bottom_right", "╝", false);
+
         setChar("blank", " ");
+        setChar("undo", "⦾");
 
         setChar("robot", "X");
-
-        setChar("b_horizontal", "--", false);
-        setChar("b_right_wall", "|", false);
-        setChar("b_left_wall", "|", true);
-        setChar("b_top_left", "@-", false);
-        setChar("b_top_right", "@", false);
-        setChar("b_bottom_left", "@-", false);
-        setChar("b_bottom_right", "@", false);
 
         setChar("j_H", "H" );
         setChar("j_M", "M" );
@@ -193,13 +186,6 @@ public class AsciiTrajectory {
 
     public void printTiles() {
         // Print the 2d array of tiles
-        try {
-            try (FileOutputStream fos = new FileOutputStream("test.txt");
-                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-                BufferedWriter writer = new BufferedWriter(osw)) {
-                writer.write(this.toString());
-            }
-        } catch (IOException ignored) {}
         System.out.println(this.toString());
     }
 
@@ -340,6 +326,54 @@ public class AsciiTrajectory {
         lastDirection = direction;
     }
 
+    public void undo(TileMovementPretty.MoveDirection previousDirection) {
+        if (lastDirection == TileMovementPretty.MoveDirection.UP) {
+            setTile(position[0], position[1], "blank");
+            position[1]++;
+            setTile(position[0], position[1], "blank");
+            position[1]++;
+        } else if (lastDirection == TileMovementPretty.MoveDirection.DOWN) {
+            setTile(position[0], position[1], "blank");
+            position[1]--;
+            setTile(position[0], position[1], "blank");
+            position[1]--;
+        } else if (lastDirection == TileMovementPretty.MoveDirection.LEFT) {
+            setTile(position[0], position[1], "blank");
+            position[0]++;
+            setTile(position[0], position[1], "blank");
+            position[0]++;
+        } else if (lastDirection == TileMovementPretty.MoveDirection.RIGHT) {
+            setTile(position[0], position[1], "blank");
+            position[0]--;
+            setTile(position[0], position[1], "blank");
+            position[0]--;
+        }
+        switch (previousDirection) {
+            case UP:
+                setTile(position[0], position[1], "m_up_end");
+                break;
+            case DOWN:
+                setTile(position[0], position[1], "m_down_end");
+                break;
+            case LEFT:
+                setTile(position[0], position[1], "m_left_end");
+                break;
+            case RIGHT:
+                setTile(position[0], position[1], "m_right_end");
+                break;
+        }
+        lastDirection = previousDirection;
+    }
+
+    public void moveToJunction(TileMovementPretty.MoveDirection direction) {
+        switch (direction) {
+            case J_UP_LEFT: junctionUpLeft(); break;
+            case J_UP_RIGHT: junctionUpRight(); break;
+            case J_DOWN_LEFT: junctionDownLeft(); break;
+            case J_DOWN_RIGHT: junctionDownRight(); break;
+        }
+    }
+
     public void junctionUpLeft() {
         setTile(position[0], position[1], "j_top_left");
     }
@@ -364,10 +398,23 @@ public class AsciiTrajectory {
     public void setRobotPosition(double x, double y) {
         /* UNCOMMENT
         position = asCenterTile(Generic.getTileIndex(x, y));
-         */
+        // */
         position = asCenterTile((int) x, (int) y);
         setTile(position[0], position[1], "robot");
+    }
 
+    public static String octantOutput(int octant) {
+        switch (octant) {
+            case 0: return "   \n ⦿→\n   ";
+            case 1: return "  ↗\n ⦿ \n   ";
+            case 2: return " ↑ \n ⦿ \n   ";
+            case 3: return "↖  \n ⦿ \n   ";
+            case 4: return "   \n←⦿ \n   ";
+            case 5: return "   \n ⦿ \n↙  ";
+            case 6: return "   \n ⦿ \n ↓ ";
+            case 7: return "   \n ⦿ \n  ↘";
+            default: return "   \n ⦿ \n   ";
+        }
     }
 
     public static void main(String[] args) {
@@ -375,19 +422,13 @@ public class AsciiTrajectory {
         long start = System.nanoTime();
         System.out.println(start);
         AsciiTrajectory asciiTrajectory = new AsciiTrajectory();
-        asciiTrajectory.setRobotPosition(4, 4);
+        asciiTrajectory.setRobotPosition(5, 5);
         asciiTrajectory.move(TileMovementPretty.MoveDirection.UP);
         asciiTrajectory.move(TileMovementPretty.MoveDirection.UP);
         asciiTrajectory.move(TileMovementPretty.MoveDirection.LEFT);
+        asciiTrajectory.move(TileMovementPretty.MoveDirection.LEFT);
+        asciiTrajectory.undo(TileMovementPretty.MoveDirection.LEFT);
         asciiTrajectory.move(TileMovementPretty.MoveDirection.DOWN);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.DOWN);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.LEFT);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.UP);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.UP);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.LEFT);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.UP);
-        asciiTrajectory.move(TileMovementPretty.MoveDirection.RIGHT);
-        asciiTrajectory.junctionDownLeft();
         asciiTrajectory.printTiles();
         System.out.println("end");
         long end = System.nanoTime();
@@ -406,4 +447,4 @@ class TileMovementPretty {
     }
 }
 
- */
+//*/

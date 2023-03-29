@@ -5,6 +5,7 @@ import static incognito.teamcode.config.SlideConstants.CURRENT_ALERT_STOPPED;
 import static incognito.teamcode.config.SlideConstants.S_RUN_TO_POSITION_POWER;
 import static incognito.teamcode.config.SlideConstants.S_SET_POSITION_THRESHOLD;
 import static incognito.teamcode.config.SlideConstants.VELOCITY_STOP_THRESHOLD;
+import static incognito.teamcode.config.WorldSlideConstants.VS_ENCODER_CENTER;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -32,6 +33,9 @@ public class MotorGroup extends HardwareComponent {
     protected double startMaxPower;
     protected double lastPower = 0;
 
+    public boolean atTop = false;
+    public boolean atBottom = true;
+
     public DcMotorEx[] motors;
 
     protected boolean disabled = false;
@@ -51,6 +55,8 @@ public class MotorGroup extends HardwareComponent {
     public MotorGroup(HardwareMap hardwareMap, Telemetry telemetry, DcMotorEx[] motors, double minEncoderPosition, double maxEncoderPosition, double ticksPerInch) {
         super(hardwareMap, telemetry);
         this.setPositions = new ArrayList<>();
+        addSetPosition((int) minEncoderPosition);
+        addSetPosition((int) maxEncoderPosition);
         this.motors = motors;
         this.MIN_ENCODER_POSITION = minEncoderPosition;
         this.MAX_ENCODER_POSITION = maxEncoderPosition;
@@ -66,6 +72,18 @@ public class MotorGroup extends HardwareComponent {
             motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    public boolean goingUp() {
+        if (isRunToPosition() && getTargetPosition() > getPosition()) return true;
+        if (isRunUsingEncoder() && getPower() > 0) return true;
+        return false;
+    }
+
+    public boolean goingDown() {
+        if (isRunToPosition() && getTargetPosition() < getPosition()) return true;
+        if (isRunUsingEncoder() && getPower() < 0) return true;
+        return false;
     }
 
     public void setMaxPower(double newPower) {
@@ -88,6 +106,7 @@ public class MotorGroup extends HardwareComponent {
         return getMode() == DcMotorEx.RunMode.RUN_USING_ENCODER;
     }
 
+    /* OLD
     public void setPower(double power) {
         if (disabled)
             return;
@@ -102,6 +121,7 @@ public class MotorGroup extends HardwareComponent {
             motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
     }
+    */
 
     public ArrayList<Double> getPowers() {
         ArrayList<Double> powers = new ArrayList<>();
@@ -125,10 +145,8 @@ public class MotorGroup extends HardwareComponent {
     }
      */
 
-    public boolean atSetPosition() {
-        return atSetPosition(S_SET_POSITION_THRESHOLD);
-    }
 
+    /*
     public boolean atSetPosition(double threshold) {
         double sum = 0;
         for (DcMotorEx motor : motors) {
@@ -137,6 +155,7 @@ public class MotorGroup extends HardwareComponent {
         sum /= motors.length;
         return withinThreshold(motors[0].getTargetPosition(), sum, threshold);
     }
+     */
 
     public void setTargetPosition(int position) {
         if (disabled)
@@ -245,6 +264,46 @@ public class MotorGroup extends HardwareComponent {
         return totalVel / motors.length;
     }
 
+    public boolean getDangerState() {
+        return getPosition() < MIN_ENCODER_POSITION || getPosition() > MAX_ENCODER_POSITION;
+    }
+
+    public void setPower(double power) {
+        if (atTop && goingUp())
+            power = 0;
+        else if (atBottom && goingDown())
+            power = 0;
+        lastPower = power;
+        double realPower = Math.min(power * maxPower, maxPower);
+        for (DcMotorEx motor : motors) {
+            motor.setPower(realPower);
+            motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public boolean atSetPosition() {
+        return atSetPosition(S_SET_POSITION_THRESHOLD);
+    }
+
+    public boolean atSetPosition(double threshold) {
+        // If limit switch is triggered and we are trying to go higher,
+        // artificially say we are at our setPosition (highest value)
+        if (atTop && goingUp()) {
+            return true;
+        }
+        // If limit switch is triggered and we are trying to go lower,
+        // artificially say we are at our setPosition (lowest value)
+        if (atBottom && goingDown()) {
+            return true;
+        }
+        double sum = 0;
+        for (DcMotorEx motor : motors) {
+            sum += motor.getCurrentPosition();
+        }
+        sum /= motors.length;
+        return withinThreshold(motors[0].getTargetPosition(), sum, threshold);
+    }
+
     public void update() {
         if (disabled) {
             telemetry.addData("DISABLED", this.getClass());
@@ -258,6 +317,26 @@ public class MotorGroup extends HardwareComponent {
                 disable();
                 break;
             }
+        }
+
+        // If switch is pressed
+        if (getDangerState()) {
+            // If triggered above halfway point => at top
+            if (getPosition() > VS_ENCODER_CENTER && goingUp()) {
+                // Consider changing highest setPosition value to current position?
+                // Don't reset if we are trying to go downwards
+                atTop = true;
+                setPower(0);
+                // If triggered below halfway point => at bottom
+            } else if (getPosition() <= VS_ENCODER_CENTER && goingDown()) {
+                // Don't reset if we are trying to go upwards
+                atBottom = true;
+                setPower(0);
+                hardReset();
+            }
+        } else {
+            atBottom = false;
+            atTop = false;
         }
     }
 

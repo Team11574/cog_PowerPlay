@@ -7,7 +7,7 @@ public class PIDController {
     private PIDCoefficients pidCoefficients;
     private double desired_value;
     private double previous_error, current_error = 0;
-    private double P, I, D = 0;
+    private double P = 0, I = 0, D = 0;
     ElapsedTime timer = new ElapsedTime();
 
 

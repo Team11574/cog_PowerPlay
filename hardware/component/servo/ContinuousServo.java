@@ -30,7 +30,6 @@ public class ContinuousServo extends SetServo {
                            double[] startPositions, double lowBound, double upBound) {
         super(hardwareMap, telemetry, crServo, startPositions);
         startPosition = startPositions[0];
-        telemetry.addData("Cont Servo Start Pos", startPosition);
         lowerBound = lowBound;
         upperBound = upBound;
         initializeHardware();

@@ -74,6 +74,12 @@ public class MotorGroup extends HardwareComponent {
         }
     }
 
+    public void setMode(DcMotorEx.RunMode mode) {
+        for (DcMotorEx motor : motors) {
+            motor.setMode(mode);
+        }
+    }
+
     public boolean goingUp() {
         if (isRunToPosition() && getTargetPosition() > getPosition()) return true;
         if (isRunUsingEncoder() && getPower() > 0) return true;

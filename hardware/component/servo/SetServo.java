@@ -89,8 +89,8 @@ public class SetServo extends HardwareComponent {
     public void shiftPositions(int count) {
         currentPositionIndex += count;
         currentPositionIndex %= positions.size();
-        if (currentPositionIndex < 0) {
-            currentPositionIndex = positions.size();
+        while (currentPositionIndex < 0) {
+            currentPositionIndex += positions.size();
         }
         goToSetPosition(currentPositionIndex);
     }

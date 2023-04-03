@@ -25,7 +25,6 @@ import incognito.cog.hardware.component.drive.SampleMecanumDrive;
  */
 
 @Config
-@Disabled
 @Autonomous(group = "drive")
 public class MaxAngularVeloTuner extends LinearOpMode {
     public static double RUNTIME = 4.0;

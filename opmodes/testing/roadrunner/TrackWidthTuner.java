@@ -26,7 +26,6 @@ import incognito.teamcode.config.DriveConstants;
  * accurate track width estimate is important or else the angular constraints will be thrown off.
  */
 @Config
-@Disabled
 @Autonomous(group = "drive")
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg

@@ -37,7 +37,6 @@ import incognito.cog.hardware.component.drive.StandardTrackingWheelLocalizer;
  * satisfactory result is produced.
  */
 @Config
-@Disabled
 @Autonomous(group = "drive")
 public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg

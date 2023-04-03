@@ -11,7 +11,6 @@ import incognito.cog.hardware.component.drive.SampleMecanumDrive;
  * This is a simple routine to test turning capabilities.
  */
 @Config
-@Disabled
 @Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg

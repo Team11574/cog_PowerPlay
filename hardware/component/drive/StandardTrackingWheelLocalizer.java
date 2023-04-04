@@ -29,14 +29,14 @@ import incognito.cog.util.roadrunner.Encoder;
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 30; // in
+    public static double WHEEL_RADIUS = 1.181102362205; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 8.1875; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 0.375; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 8.029376653237621; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 0.37; // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 1.001801275426; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1.004531313528; // Multiplier in the Y direction
 
     private final Encoder leftEncoder;
     private final Encoder rightEncoder;
@@ -61,7 +61,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
-        rightEncoder.setDirection(Encoder.Direction.REVERSE);
+        leftEncoder.setDirection(Encoder.Direction.REVERSE);
     }
 
     public static double encoderTicksToInches(double ticks) {
@@ -71,9 +71,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        int leftPos = leftEncoder.getCurrentPosition();
-        int rightPos = rightEncoder.getCurrentPosition();
-        int frontPos = frontEncoder.getCurrentPosition();
+        int leftPos = (int) (leftEncoder.getCurrentPosition() * X_MULTIPLIER);
+        int rightPos = (int) (rightEncoder.getCurrentPosition() * X_MULTIPLIER);
+        int frontPos = (int) (frontEncoder.getCurrentPosition() * Y_MULTIPLIER);
 
         lastEncPositions.clear();
         lastEncPositions.add(leftPos);

@@ -28,12 +28,15 @@ import incognito.cog.util.roadrunner.Encoder;
  */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 0;
-    public static double WHEEL_RADIUS = 2; // in
+    public static double TICKS_PER_REV = 8192;
+    public static double WHEEL_RADIUS = 30; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 10; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 4; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 8.1875; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 0.375; // in; offset of the lateral wheel
+
+    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
     private final Encoder leftEncoder;
     private final Encoder rightEncoder;
@@ -87,9 +90,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
-        int leftVel = (int) leftEncoder.getCorrectedVelocity();
-        int rightVel = (int) rightEncoder.getCorrectedVelocity();
-        int frontVel = (int) frontEncoder.getCorrectedVelocity();
+        int leftVel = (int) (leftEncoder.getCorrectedVelocity() * X_MULTIPLIER);
+        int rightVel = (int) (rightEncoder.getCorrectedVelocity() * X_MULTIPLIER);
+        int frontVel = (int) (frontEncoder.getCorrectedVelocity()  * Y_MULTIPLIER);
 
         lastEncVels.clear();
         lastEncVels.add(leftVel);

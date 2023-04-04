@@ -31,7 +31,7 @@ import incognito.teamcode.config.DriveConstants;
  * connected, start the program, and your robot will begin moving forward and backward according to
  * a motion profile. Your job is to graph the velocity errors over time and adjust the PID
  * coefficients (note: the tuning variable will not appear until the op mode finishes initializing).
- * Once you've found a satisfactory set of gains, add them to the DriveConstants.java file under the
+ * Once you've found a satisfactory set of gains, add them to the DriveConstantsOld.java file under the
  * MOTOR_VELO_PID field.
  *
  * Recommended tuning process:

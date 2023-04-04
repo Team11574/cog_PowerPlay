@@ -1,35 +1,56 @@
 package incognito.cog.hardware.gamepad;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 import incognito.cog.actions.Action;
+import incognito.cog.util.TelemetryBigError;
 
 public class Button {
     ArrayList<Action> actions = new ArrayList<>();
-    Callable<Boolean> updateFunction;
-    Button onRise;
-    Button onFall;
-    Boolean value;
-    Boolean lastValue;
+    Function<Gamepad, Boolean> coreFunction;
+    Function<Button, Boolean> riseFallFunction;
+    public Button onRise;
+    public Button onFall;
+    public Boolean value = false;
+    public Boolean lastValue;
+    boolean isRiseFall = false;
     boolean temp;
 
-    public Button(Callable<Boolean> updateFunction) {
-        this(updateFunction, true);
+    public Button(Function<Gamepad, Boolean> updateFunction) {
+        this.coreFunction = updateFunction;
+        this.onRise = new Button((Button button) -> button.value && !button.lastValue, true);
+        this.onFall = new Button((Button button) -> button.lastValue && !button.value, true);
     }
 
-    private Button(Callable<Boolean> updateFunction, boolean coreButton) {
-        this.updateFunction = updateFunction;
-        if (coreButton) {
-            this.onRise = new Button(() -> this.value && !this.lastValue, false);
-            this.onFall = new Button(() -> this.lastValue && !this.value, false);
+    private Button(Function<Button, Boolean> updateFunction, boolean isRiseFall) {
+        this.riseFallFunction = updateFunction;
+        this.isRiseFall = isRiseFall;
+    }
+
+    public void update(Gamepad gamepad) {
+        temp = value;
+        try {
+            value = coreFunction.apply(gamepad);
+            lastValue = temp;
+            onRise.update(this);
+            onFall.update(this);
+        } catch (Exception e) {
+            TelemetryBigError.raise(3, 100);
+            value = temp;
+        }
+        if (value) {
+            run();
         }
     }
 
-    public void update() {
+    private void update(Button button) {
         temp = value;
         try {
-            value = updateFunction.call();
+            value = riseFallFunction.apply(button);
             lastValue = temp;
         } catch (Exception e) {
             value = temp;

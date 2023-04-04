@@ -22,20 +22,20 @@ public class Cogtroller {
 
     public Cogtroller(Gamepad pad) {
         gamepad = pad;
-        dpad_up = new Button(() -> gamepad.dpad_up);
-        dpad_down = new Button(() -> gamepad.dpad_down);
-        dpad_left = new Button(() -> gamepad.dpad_left);
-        dpad_right = new Button(() -> gamepad.dpad_right);
-        a = new Button(() -> gamepad.a);
-        b = new Button(() -> gamepad.b);
-        x = new Button(() -> gamepad.x);
-        y = new Button(() -> gamepad.y);
-        left_bumper = new Button(() -> gamepad.left_bumper);
-        right_bumper = new Button(() -> gamepad.right_bumper);
-        left_stick_button = new Button(() -> gamepad.left_stick_button);
-        right_stick_button = new Button(() -> gamepad.right_stick_button);
-        left_trigger = new Button(() -> gamepad.left_trigger > 0);
-        right_trigger = new Button(() -> gamepad.right_trigger > 0);
+        dpad_up = new Button((Gamepad gamepad) -> gamepad.dpad_up);
+        dpad_down = new Button((Gamepad gamepad) -> gamepad.dpad_down);
+        dpad_left = new Button((Gamepad gamepad) -> gamepad.dpad_left);
+        dpad_right = new Button((Gamepad gamepad) -> gamepad.dpad_right);
+        a = new Button((Gamepad gamepad) -> gamepad.a);
+        b = new Button((Gamepad gamepad) -> gamepad.b);
+        x = new Button((Gamepad gamepad) -> gamepad.x);
+        y = new Button((Gamepad gamepad) -> gamepad.y);
+        left_bumper = new Button((Gamepad gamepad) -> gamepad.left_bumper);
+        right_bumper = new Button((Gamepad gamepad) -> gamepad.right_bumper);
+        left_stick_button = new Button((Gamepad gamepad) -> gamepad.left_stick_button);
+        right_stick_button = new Button((Gamepad gamepad) -> gamepad.right_stick_button);
+        left_trigger = new Button((Gamepad gamepad) -> gamepad.left_trigger > 0);
+        right_trigger = new Button((Gamepad gamepad) -> gamepad.right_trigger > 0);
     }
 
     public float get_partitioned_left_stick_y() {
@@ -124,20 +124,20 @@ public class Cogtroller {
     }
 
     public void update() {
-        dpad_up.update();
-        dpad_down.update();
-        dpad_left.update();
-        dpad_right.update();
-        a.update();
-        b.update();
-        x.update();
-        y.update();
-        left_bumper.update();
-        right_bumper.update();
-        left_stick_button.update();
-        right_stick_button.update();
-        left_trigger.update();
-        right_trigger.update();
+        dpad_up.update(this.gamepad);
+        dpad_down.update(this.gamepad);
+        dpad_left.update(this.gamepad);
+        dpad_right.update(this.gamepad);
+        a.update(this.gamepad);
+        b.update(this.gamepad);
+        x.update(this.gamepad);
+        y.update(this.gamepad);
+        left_bumper.update(this.gamepad);
+        right_bumper.update(this.gamepad);
+        left_stick_button.update(this.gamepad);
+        right_stick_button.update(this.gamepad);
+        left_trigger.update(this.gamepad);
+        right_trigger.update(this.gamepad);
     }
 
 }

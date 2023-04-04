@@ -5,7 +5,7 @@ import static incognito.teamcode.config.SlideConstants.CURRENT_ALERT_STOPPED;
 import static incognito.teamcode.config.SlideConstants.S_RUN_TO_POSITION_POWER;
 import static incognito.teamcode.config.SlideConstants.S_SET_POSITION_THRESHOLD;
 import static incognito.teamcode.config.SlideConstants.VELOCITY_STOP_THRESHOLD;
-import static incognito.teamcode.config.WorldSlideConstants.VS_ENCODER_CENTER;
+import static incognito.teamcode.config.WorldSlideConstants.S_ENCODER_CENTER_ISH;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -300,6 +300,7 @@ public class MotorGroup extends HardwareComponent {
         // If limit switch is triggered and we are trying to go lower,
         // artificially say we are at our setPosition (lowest value)
         if (atBottom && goingDown()) {
+            if (getTargetPosition() == 0) hardReset();
             return true;
         }
         double sum = 0;
@@ -328,13 +329,13 @@ public class MotorGroup extends HardwareComponent {
         // If switch is pressed
         if (getDangerState()) {
             // If triggered above halfway point => at top
-            if (getPosition() > VS_ENCODER_CENTER && goingUp()) {
+            if (getPosition() > S_ENCODER_CENTER_ISH && goingUp()) {
                 // Consider changing highest setPosition value to current position?
                 // Don't reset if we are trying to go downwards
                 atTop = true;
                 setPower(0);
                 // If triggered below halfway point => at bottom
-            } else if (getPosition() <= VS_ENCODER_CENTER && goingDown()) {
+            } else if (getPosition() <= S_ENCODER_CENTER_ISH && goingDown()) {
                 // Don't reset if we are trying to go upwards
                 atBottom = true;
                 setPower(0);

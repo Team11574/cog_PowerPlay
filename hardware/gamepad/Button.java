@@ -16,9 +16,9 @@ public class Button {
     public Button onRise;
     public Button onFall;
     public Boolean value = false;
-    public Boolean lastValue;
-    boolean isRiseFall = false;
-    boolean temp;
+    public Boolean lastValue = false;
+    Boolean isRiseFall = false;
+    Boolean temp = false;
 
     public Button(Function<Gamepad, Boolean> updateFunction) {
         this.coreFunction = updateFunction;
@@ -39,7 +39,6 @@ public class Button {
             onRise.update(this);
             onFall.update(this);
         } catch (Exception e) {
-            TelemetryBigError.raise(3, 100);
             value = temp;
         }
         if (value) {
@@ -53,6 +52,7 @@ public class Button {
             value = riseFallFunction.apply(button);
             lastValue = temp;
         } catch (Exception e) {
+            TelemetryBigError.raise(3, 100);
             value = temp;
         }
         if (value) {

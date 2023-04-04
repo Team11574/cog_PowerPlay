@@ -10,7 +10,7 @@ import incognito.cog.actions.Action;
 import incognito.cog.util.TelemetryBigError;
 
 public class Button {
-    ArrayList<Action> actions = new ArrayList<>();
+    public ArrayList<Action> actions = new ArrayList<>();
     Function<Gamepad, Boolean> coreFunction;
     Function<Button, Boolean> riseFallFunction;
     public Button onRise;

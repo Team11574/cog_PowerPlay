@@ -46,10 +46,10 @@ import incognito.teamcode.config.DriveConstants;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0.1, 1);// ORIGINAL: all zeros
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0.2, 0.6); // ORIGINAL: all zeros
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1); //(9, 0.1, 1);// ORIGINAL: all zeros
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0);//(12, 0.2, 0.6); // ORIGINAL: all zeros
 
-    public static double LATERAL_MULTIPLIER = 1.2;
+    public static double LATERAL_MULTIPLIER = 1;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -98,7 +98,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             this.telemetry = telemetry;
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.1, 0.1, Math.toRadians(1)), 0.25); // TIMEOUT WAS 1
+                new Pose2d(0.1, 0.1, Math.toRadians(1)), .25); // TIMEOUT WAS 1
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -212,19 +212,19 @@ public class SampleMecanumDrive extends MecanumDrive {
     // ADDED BY US
     // Current index of the trajectory sequence
     public int getCurrentSegmentIndex() {
-        return trajectorySequenceRunner.getCurrentSegmentIndex();
+        return -1; //trajectorySequenceRunner.getCurrentSegmentIndex();
     }
 
     // ADDED BY US
     // Length of the current trajectory sequence
     public int getCurrentTrajectorySize() {
-        return trajectorySequenceRunner.getCurrentTrajectorySize();
+        return 0; //trajectorySequenceRunner.getCurrentTrajectorySize();
     }
 
     // ADDED BY US
     // Previous (already run) index of the trajectory sequence
     public int getLastSegmentIndex() {
-        return trajectorySequenceRunner.getLastSegmentIndex();
+        return -2; //trajectorySequenceRunner.getLastSegmentIndex();
     }
 
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {

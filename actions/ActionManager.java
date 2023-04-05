@@ -3,7 +3,7 @@ package incognito.cog.actions;
 import java.util.ArrayList;
 
 public class ActionManager {
-    static ArrayList<Action> actions = new ArrayList<>();
+    public static ArrayList<Action> actions = new ArrayList<>();
 
     public static void add(Action action) {
         actions.add(action);

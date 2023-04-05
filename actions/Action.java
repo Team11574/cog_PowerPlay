@@ -73,19 +73,25 @@ public class Action {
 
     public void run() {
         index = 0;
+        stage = 0;
         timer.reset();
     }
 
     public void cancel() {
         index = -1;
+        stage = 0;
         timer.reset();
+    }
+
+    public boolean isActive() {
+        return index >= 0;
     }
 
     public void update() {
         if (index >= actions.size()) {
             index = -1;
         }
-        if (index > 0) {
+        if (index >= 0) {
             ActionBase currentAction = actions.get(index);
             try {
                 switch (stage) {

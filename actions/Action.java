@@ -7,14 +7,21 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public class Action {
-    ArrayList<ActionBase> actions = new ArrayList<>();
-    int stage = 0;
-    int index = -1;
-    ElapsedTime timer = new ElapsedTime();
+    ArrayList<ActionType> actions = new ArrayList<>();
+    public int index = -1;
+    ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+    public Action() {
+        globalize();
+    }
 
     public Action(Runnable function) {
-        //this(function, () -> true);
-        addAction(new ActionBase(function, () -> true, () -> true, 0));
+        addAction(new Runner(function));
+        globalize();
+    }
+
+    public Action(ActionType actionType) {
+        addAction(actionType);
         globalize();
     }
 
@@ -22,64 +29,46 @@ public class Action {
         ActionManager.add(this);
     }
 
-    public Action(ActionBase actionBase) {
-        addAction(actionBase);
-    }
 
-    private void addAction(ActionBase action) {
-        actions.add(action);
-    }
-
-    public Action then(Runnable function) {
-        return then(new ActionBase(function, () -> true, () -> true, 0));
-    }
-
-    public Action then(ActionBase a) {
-        addAction(a);
+    private Action addAction(ActionType actionType) {
+        actions.add(actionType);
         return this;
     }
 
+    public Action then(Runnable function) {
+        return then(new Runner(function));
+    }
+
+    public Action then(ActionType actionType) {
+        return addAction(actionType);
+    }
+
     public Action then(Action a) {
-        for (ActionBase action : a.actions) {
+        for (ActionType action : a.actions) {
             addAction(action);
         }
         return this;
     }
 
-    private ActionBase getLastActionBase() {
-        return actions.get(actions.size() - 1);
-    }
-
     public Action until(Callable<Boolean> initialCondition) {
-        // Consider what to do if this action is somehow empty SHOULD NEVER HAPPEN
-        if (actions.size() == 0) return this;
-        getLastActionBase().setInitialCondition(initialCondition);
-        return this;
+        return addAction(new Condition(initialCondition));
     }
 
     public Action when(Callable<Boolean> endCondition) {
-        // Consider what to do if this action is somehow empty SHOULD NEVER HAPPEN
-        if (actions.size() == 0) return this;
-        getLastActionBase().setEndCondition(endCondition);
-        return this;
+        return until(endCondition);
     }
 
     public Action delay(double delay) {
-        // Consider what to do if this action is somehow empty SHOULD NEVER HAPPEN
-        if (actions.size() == 0) return this;
-        getLastActionBase().setDelay(delay);
-        return this;
+        return addAction(new Delay(delay));
     }
 
     public void run() {
         index = 0;
-        stage = 0;
         timer.reset();
     }
 
     public void cancel() {
         index = -1;
-        stage = 0;
         timer.reset();
     }
 
@@ -92,98 +81,80 @@ public class Action {
             index = -1;
         }
         if (index >= 0) {
-            ActionBase currentAction = actions.get(index);
-            try {
-                switch (stage) {
-                    case 0:
-                        if (currentAction.initialCondition.call()) {
-                            stage++;
-                        }
-                        break;
-                    case 1:
-                        currentAction.function.run();
-                        stage++;
-                        break;
-                    case 2:
-                        if (currentAction.delay.apply(timer.time())) {
-                            stage++;
-                        }
-                        timer.reset();
-                        break;
-                    case 3:
-                        if (currentAction.endCondition.call()) {
-                            stage++;
-                        }
-                        break;
-                    case 4:
-                        stage = 0;
+            ActionType currentAction = actions.get(index);
+            switch (currentAction.type()) {
+                case RUNNER:
+                    ((Runner) currentAction).run();
+                    index++;
+                    timer.reset();
+                    break;
+                case CONDITION:
+                    if (((Condition) currentAction).call()) {
                         index++;
-                        break;
-                }
-            } catch (Exception ignored) {
+                        timer.reset();
+                    }
+                    break;
+                case DELAY:
+                    if (((Delay) currentAction).apply(timer.time())) {
+                        index++;
+                        timer.reset();
+                    }
+                    break;
             }
         }
     }
-
-    /*
-
-        public Action(Runnable function, Callable<Boolean> initialCondition) {
-            this(function, initialCondition, () -> true);
-        }
-
-        public Action(Runnable function, Callable<Boolean> initialCondition, Callable<Boolean> endCondition) {
-            this(function, initialCondition, endCondition, 0);
-        }
-
-
-        public Action(Runnable function, Callable<Boolean> initialCondition, Callable<Boolean> endCondition, double delay) {
-            addAction(new ActionBase(function, initialCondition, endCondition, delay));
-        }
-
-        public Action then(Runnable function, Callable<Boolean> condition) {
-            return then(function, condition, 0);
-        }
-        public Action then(Runnable function, Callable<Boolean> condition, double delay) {
-            return then(new ActionBase(function, condition, delay));
-        }
-        */
 }
 
-class ActionBase {
+abstract class ActionType {
+    public enum TYPE {
+        RUNNER,
+        CONDITION,
+        DELAY
+    }
+
+    public abstract TYPE type();
+}
+class Runner extends ActionType {
     Runnable function;
-    Callable<Boolean> initialCondition;
-    Callable<Boolean> endCondition;
-    Function<Double, Boolean> delay;
-
-    public ActionBase(Runnable function,
-                      Callable<Boolean> initialCondition,
-                      Callable<Boolean> endCondition,
-                      double delay) {
-        this(function, initialCondition, endCondition, (time) -> time >= delay);
-    }
-    public ActionBase(Runnable function,
-                      Callable<Boolean> initialCondition,
-                      Callable<Boolean> endCondition,
-                      Function<Double, Boolean> delay) {
+    public Runner (Runnable function) {
         this.function = function;
-        this.initialCondition = initialCondition;
-        this.endCondition = endCondition;
+    }
+
+    public void run() {
+        function.run();
+    }
+
+    public TYPE type() {
+        return TYPE.RUNNER;
+    }
+}
+
+class Condition extends ActionType {
+    Callable<Boolean> condition;
+    public Condition (Callable<Boolean> condition) {
+        this.condition = condition;
+    }
+    public boolean call() {
+        try {
+            return condition.call();
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+    public TYPE type() {
+        return TYPE.CONDITION;
+    }
+}
+
+class Delay extends ActionType {
+    double delay;
+    public Delay (double delay) {
         this.delay = delay;
     }
-
-    public void setInitialCondition(Callable<Boolean> initialCondition) {
-        this.initialCondition = initialCondition;
+    public boolean apply(double time) {
+        return time >= delay;
     }
-
-    public void setEndCondition(Callable<Boolean> endCondition) {
-        this.endCondition = endCondition;
-    }
-
-    public void setDelay(double delay) {
-        setDelay((time) -> time >= delay);
-    }
-
-    public void setDelay(Function<Double, Boolean> delay) {
-        this.delay = delay;
+    public TYPE type() {
+        return TYPE.DELAY;
     }
 }

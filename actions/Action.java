@@ -25,6 +25,11 @@ public class Action {
         globalize();
     }
 
+    public Action(Action action) {
+        addAction(action);
+        globalize();
+    }
+
     private void globalize() {
         ActionManager.add(this);
     }
@@ -32,6 +37,13 @@ public class Action {
 
     private Action addAction(ActionType actionType) {
         actions.add(actionType);
+        return this;
+    }
+
+    private Action addAction(Action action) {
+        for (ActionType actionType : action.actions) {
+            addAction(actionType);
+        }
         return this;
     }
 
@@ -44,10 +56,7 @@ public class Action {
     }
 
     public Action then(Action a) {
-        for (ActionType action : a.actions) {
-            addAction(action);
-        }
-        return this;
+        return addAction(a);
     }
 
     public Action until(Callable<Boolean> initialCondition) {
@@ -60,6 +69,10 @@ public class Action {
 
     public Action delay(double delay) {
         return addAction(new Delay(delay));
+    }
+
+    public Action waitFor(Action action) {
+        return addAction(new Condition(() -> action.index == -1));
     }
 
     public void run() {

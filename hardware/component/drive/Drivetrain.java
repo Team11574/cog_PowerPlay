@@ -28,4 +28,8 @@ public class Drivetrain extends SampleMecanumDrive {
     public Drivetrain(HardwareMap hardwareMap, Telemetry telemetry, DcMotorEx[] motors) {
         this(hardwareMap, telemetry, motors[0], motors[1], motors[2], motors[3]);
     }
+
+    public BHI260IMU getImu() {
+        return imu;
+    }
 }

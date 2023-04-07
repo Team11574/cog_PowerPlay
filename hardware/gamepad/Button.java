@@ -66,16 +66,18 @@ public class Button {
         }
     }
 
-    public Button onRise(Action action) {
-        this.onRise.bind(action);
-        return this;
-    }
-
     public Button onRise(Runnable runner) {
         return this.onRise(new Action(runner));
     }
 
+    public Button onRise(Action action) {
+        action.globalize();
+        this.onRise.bind(action);
+        return this;
+    }
+
     public Button onFall(Action action) {
+        action.globalize();
         this.onFall.bind(action);
         return this;
     }
@@ -84,12 +86,13 @@ public class Button {
         return this.onFall(new Action(runner));
     }
 
-    public Button bind(Action action) {
-        actions.add(action);
-        return this;
-    }
-
     public Button bind(Runnable runner) {
         return bind(new Action(runner));
+    }
+
+    public Button bind(Action action) {
+        action.globalize();
+        actions.add(action);
+        return this;
     }
 }

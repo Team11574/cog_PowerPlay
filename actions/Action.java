@@ -4,34 +4,32 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public class Action {
     ArrayList<ActionType> actions = new ArrayList<>();
     public int index = -1;
     ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+    boolean globalized = false;
 
-    public Action() {
-        globalize();
-    }
+    public Action() {}
 
     public Action(Runnable function) {
         addAction(new Runner(function));
-        globalize();
     }
 
     public Action(ActionType actionType) {
         addAction(actionType);
-        globalize();
     }
 
     public Action(Action action) {
         addAction(action);
-        globalize();
     }
 
-    private void globalize() {
-        ActionManager.add(this);
+    public void globalize() {
+        if (!globalized) {
+            ActionManager.add(this);
+            globalized = true;
+        }
     }
 
 
@@ -52,15 +50,15 @@ public class Action {
     }
 
     public Action then(ActionType actionType) {
-        return addAction(actionType);
+        return new Action(this).addAction(actionType);
     }
 
     public Action then(Action a) {
-        return addAction(a);
+        return new Action(this).addAction(a);
     }
 
     public Action until(Callable<Boolean> initialCondition) {
-        return addAction(new Condition(initialCondition));
+        return new Action(this).addAction(new Condition(initialCondition));
     }
 
     public Action when(Callable<Boolean> endCondition) {
@@ -68,19 +66,33 @@ public class Action {
     }
 
     public Action delay(double delay) {
-        return addAction(new Delay(delay));
+        return new Action(this).addAction(new Delay(delay));
     }
 
     public Action waitFor(Action action) {
-        return addAction(new Condition(() -> action.index == -1));
+        return new Action(this).addAction(new Condition(() -> action.index == -1));
+    }
+
+    public Action doIf(Runnable function, Callable<Boolean> condition) {
+        return new Action(this).addAction(new ConditionalRunner(function, condition));
+    }
+
+    public Action doIf(ActionType action, Callable<Boolean> condition) {
+        return new Action(this).addAction(new ConditionalRunner(action, condition));
+    }
+
+    public Action doIf(Action action, Callable<Boolean> condition) {
+        return new Action(this).addAction(new ConditionalRunner(action, condition));
     }
 
     public void run() {
+        if (!globalized) globalize();
         index = 0;
         timer.reset();
     }
 
     public void cancel() {
+        if (!globalized) globalize();
         index = -1;
         timer.reset();
     }
@@ -91,41 +103,21 @@ public class Action {
 
     public void update() {
         if (index >= actions.size()) {
+            // unglobalize()?
             index = -1;
         }
         if (index >= 0) {
             ActionType currentAction = actions.get(index);
-            switch (currentAction.type()) {
-                case RUNNER:
-                    ((Runner) currentAction).run();
-                    index++;
-                    timer.reset();
-                    break;
-                case CONDITION:
-                    if (((Condition) currentAction).call()) {
-                        index++;
-                        timer.reset();
-                    }
-                    break;
-                case DELAY:
-                    if (((Delay) currentAction).apply(timer.time())) {
-                        index++;
-                        timer.reset();
-                    }
-                    break;
+            if (currentAction.isFinished(timer.time())) {
+                index++;
+                timer.reset();
             }
         }
     }
 }
 
 abstract class ActionType {
-    public enum TYPE {
-        RUNNER,
-        CONDITION,
-        DELAY
-    }
-
-    public abstract TYPE type();
+    public abstract boolean isFinished(double time);
 }
 class Runner extends ActionType {
     Runnable function;
@@ -137,8 +129,9 @@ class Runner extends ActionType {
         function.run();
     }
 
-    public TYPE type() {
-        return TYPE.RUNNER;
+    public boolean isFinished(double time) {
+        run();
+        return true;
     }
 }
 
@@ -154,8 +147,9 @@ class Condition extends ActionType {
             return false;
         }
     }
-    public TYPE type() {
-        return TYPE.CONDITION;
+
+    public boolean isFinished(double time) {
+        return call();
     }
 }
 
@@ -164,10 +158,38 @@ class Delay extends ActionType {
     public Delay (double delay) {
         this.delay = delay;
     }
-    public boolean apply(double time) {
+    public boolean isFinished(double time) {
         return time >= delay;
     }
-    public TYPE type() {
-        return TYPE.DELAY;
+}
+
+class ConditionalRunner extends  ActionType {
+    Action action;
+    Callable<Boolean> condition;
+    public ConditionalRunner (Runnable runnable, Callable<Boolean> condition) {
+        this(new Action(runnable), condition);
+    }
+
+    public ConditionalRunner (ActionType action, Callable<Boolean> condition) {
+        this(new Action(action), condition);
+    }
+
+    public ConditionalRunner (Action action, Callable<Boolean> condition) {
+        this.action = action;
+        this.condition = condition;
+    }
+
+    public boolean call() {
+        try {
+            return condition.call();
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+    public boolean isFinished(double time) {
+        if (!action.isActive() && call()) {
+            action.run();
+        }
+        return !action.isActive();
     }
 }

@@ -10,13 +10,13 @@ import incognito.cog.actions.Action;
 import incognito.cog.util.TelemetryBigError;
 
 public class Button {
-    public ArrayList<Action> actions = new ArrayList<>();
+    private ArrayList<Action> actions = new ArrayList<>();
     Function<Gamepad, Boolean> coreFunction;
     Function<Button, Boolean> riseFallFunction;
-    public Button onRise;
-    public Button onFall;
-    public Boolean value = false;
-    public Boolean lastValue = false;
+    private Button onRise;
+    private Button onFall;
+    private Boolean value = false;
+    private Boolean lastValue = false;
     Boolean isRiseFall = false;
     Boolean temp = false;
 
@@ -71,13 +71,11 @@ public class Button {
     }
 
     public Button onRise(Action action) {
-        action.globalize();
         this.onRise.bind(action);
         return this;
     }
 
     public Button onFall(Action action) {
-        action.globalize();
         this.onFall.bind(action);
         return this;
     }

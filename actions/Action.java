@@ -176,6 +176,7 @@ class ConditionalRunner extends  ActionType {
 
     public ConditionalRunner (Action action, Callable<Boolean> condition) {
         this.action = action;
+        this.action.globalize();
         this.condition = condition;
     }
 

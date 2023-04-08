@@ -68,7 +68,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private final DcMotorEx DT_frontRight_M;
     private final List<DcMotorEx> motors;
 
-    private final IMU imu;
+    protected final IMU imu;
     private final VoltageSensor batteryVoltageSensor;
 
     private final List<Integer> lastEncPositions = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -19,7 +20,7 @@ public class Drivetrain extends SampleMecanumDrive {
 
     DcMotor[] DT_Motors;
 
-    BHI260IMU imu;
+    //BHI260IMU imu;
 
     public Drivetrain(HardwareMap hardwareMap, Telemetry telemetry, DcMotorEx frontRight, DcMotorEx backRight, DcMotorEx frontLeft, DcMotorEx backleft) {
         super(hardwareMap, telemetry, frontRight, backRight, frontLeft, backleft);
@@ -29,7 +30,7 @@ public class Drivetrain extends SampleMecanumDrive {
         this(hardwareMap, telemetry, motors[0], motors[1], motors[2], motors[3]);
     }
 
-    public BHI260IMU getImu() {
+    public IMU getImu() {
         return imu;
     }
 }

@@ -25,11 +25,12 @@ public class Action {
         addAction(action);
     }
 
-    public void globalize() {
+    public Action globalize() {
         if (!globalized) {
             ActionManager.add(this);
             globalized = true;
         }
+        return this;
     }
 
 

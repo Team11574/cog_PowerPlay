@@ -303,6 +303,9 @@ public class MotorGroup extends HardwareComponent {
             if (getTargetPosition() == 0) hardReset();
             return true;
         }
+        if (getMode() == DcMotorEx.RunMode.RUN_USING_ENCODER) {
+            return getPower() < 0.1;
+        }
         double sum = 0;
         for (DcMotorEx motor : motors) {
             sum += motor.getCurrentPosition();

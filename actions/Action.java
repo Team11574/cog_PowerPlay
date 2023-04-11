@@ -103,15 +103,19 @@ public class Action {
     }
 
     public void update() {
-        if (index >= actions.size()) {
-            // unglobalize()?
-            index = -1;
-        }
         if (index >= 0) {
             ActionType currentAction = actions.get(index);
             if (currentAction.isFinished(timer.time())) {
+                // End the current action
+                currentAction.end();
                 index++;
                 timer.reset();
+                // Start the next action if need be
+                if (index < actions.size()) {
+                    actions.get(index).start();
+                } else {
+                    index = -1;
+                }
             }
         }
     }
@@ -119,7 +123,10 @@ public class Action {
 
 abstract class ActionType {
     public abstract boolean isFinished(double time);
+    public void start() {};
+    public void end() {};
 }
+
 class Runner extends ActionType {
     Runnable function;
     public Runner (Runnable function) {
@@ -164,9 +171,10 @@ class Delay extends ActionType {
     }
 }
 
-class ConditionalRunner extends  ActionType {
+class ConditionalRunner extends ActionType {
     Action action;
     Callable<Boolean> condition;
+    boolean finished = false;
     public ConditionalRunner (Runnable runnable, Callable<Boolean> condition) {
         this(new Action(runnable), condition);
     }
@@ -181,6 +189,10 @@ class ConditionalRunner extends  ActionType {
         this.condition = condition;
     }
 
+    public void run() {
+        action.run();
+    }
+
     public boolean call() {
         try {
             return condition.call();
@@ -188,10 +200,18 @@ class ConditionalRunner extends  ActionType {
             return false;
         }
     }
-    public boolean isFinished(double time) {
-        if (!action.isActive() && call()) {
-            action.run();
+
+    public void start() {
+        finished = false;
+        if (call()) {
+            run();
+        } else {
+            finished = true;
         }
-        return !action.isActive();
+    }
+
+    public boolean isFinished(double time) {
+        finished = finished || !action.isActive();
+        return finished;
     }
 }

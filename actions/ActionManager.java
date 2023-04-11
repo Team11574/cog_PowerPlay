@@ -7,6 +7,7 @@ import incognito.teamcode.opmodes.tele.Tele;
 
 public class ActionManager {
     private static final ArrayList<Action> actions = new ArrayList<>();
+    private static final ArrayList<Action> actionHolder = new ArrayList<>();
 
     public static void add(Action action) {
         /*
@@ -16,7 +17,7 @@ public class ActionManager {
         TelemetryBigError.telemetry.addLine();
         TelemetryBigError.telemetry.update();
          */
-        actions.add(action);
+        actionHolder.add(action);
     }
 
     public static void clear() {
@@ -26,6 +27,10 @@ public class ActionManager {
     public static void update() {
         for (Action action : actions) {
             action.update();
+        }
+        if (actionHolder.size() > 0) {
+            actions.addAll(actionHolder);
+            actionHolder.clear();
         }
     }
 }

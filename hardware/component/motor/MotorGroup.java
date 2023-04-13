@@ -32,6 +32,7 @@ public class MotorGroup extends HardwareComponent {
     protected double maxPower = 1;
     protected double startMaxPower;
     protected double lastPower = 0;
+    double offsetFactor = 1;
 
     public boolean atTop = false;
     public boolean atBottom = true;
@@ -314,6 +315,18 @@ public class MotorGroup extends HardwareComponent {
         return withinThreshold(motors[0].getTargetPosition(), sum, threshold);
     }
 
+    public void setOffsetFactor(double factor) {
+        offsetFactor = factor;
+    }
+
+    public double getOffsetFactor() {
+        return offsetFactor;
+    }
+
+    public void offsetPosition(double offset) {
+        setTargetPosition((int) (getPosition() + offset * offsetFactor));
+    }
+
     public void update() {
         if (disabled) {
             telemetry.addData("DISABLED", this.getClass());
@@ -356,6 +369,15 @@ public class MotorGroup extends HardwareComponent {
             motor.setMotorDisable();
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+    }
+
+    public void enable() {
+        disabled = false;
+        for (DcMotorEx motor : motors) {
+            motor.setMotorEnable();
+            motor.setPower(0);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }
 }

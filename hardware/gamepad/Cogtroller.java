@@ -17,6 +17,7 @@ public class Cogtroller {
     public Button right_stick_button;
     public Button left_trigger;
     public Button right_trigger;
+    public Button guide;
 
     public Gamepad gamepad;
 
@@ -36,6 +37,7 @@ public class Cogtroller {
         right_stick_button = new Button((Gamepad gamepad) -> gamepad.right_stick_button);
         left_trigger = new Button((Gamepad gamepad) -> gamepad.left_trigger > 0);
         right_trigger = new Button((Gamepad gamepad) -> gamepad.right_trigger > 0);
+        guide = new Button((Gamepad gamepad) -> gamepad.guide);
     }
 
     public float get_partitioned_left_stick_y() {
@@ -138,6 +140,7 @@ public class Cogtroller {
         right_stick_button.update(this.gamepad);
         left_trigger.update(this.gamepad);
         right_trigger.update(this.gamepad);
+        guide.update(this.gamepad);
     }
 
 }

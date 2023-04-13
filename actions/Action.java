@@ -87,8 +87,10 @@ public class Action {
     }
 
     public void run() {
+        if (actions.size() == 0) return;
         if (!globalized) globalize();
         index = 0;
+        actions.get(0).start();
         timer.reset();
     }
 
@@ -123,8 +125,8 @@ public class Action {
 
 abstract class ActionType {
     public abstract boolean isFinished(double time);
-    public void start() {};
-    public void end() {};
+    public void start() {}
+    public void end() {}
 }
 
 class Runner extends ActionType {

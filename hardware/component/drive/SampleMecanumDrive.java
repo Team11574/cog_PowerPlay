@@ -99,7 +99,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             this.telemetry = telemetry;
 
         TrajectoryFollower follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.1, 0.1, Math.toRadians(1)), .5); // TIMEOUT WAS 1
+                new Pose2d(0.1, 0.1, Math.toRadians(.5)), .75); // TIMEOUT WAS 1
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 

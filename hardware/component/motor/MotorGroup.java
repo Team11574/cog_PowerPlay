@@ -1,10 +1,10 @@
 package incognito.cog.hardware.component.motor;
 
 import static incognito.cog.util.Generic.withinThreshold;
-import static incognito.teamcode.config.SlideConstants.CURRENT_ALERT_STOPPED;
-import static incognito.teamcode.config.SlideConstants.S_RUN_TO_POSITION_POWER;
-import static incognito.teamcode.config.SlideConstants.S_SET_POSITION_THRESHOLD;
-import static incognito.teamcode.config.SlideConstants.VELOCITY_STOP_THRESHOLD;
+import static incognito.teamcode.config.WorldSlideConstants.CURRENT_ALERT_STOPPED;
+import static incognito.teamcode.config.WorldSlideConstants.S_RUN_TO_POSITION_POWER;
+import static incognito.teamcode.config.WorldSlideConstants.S_SET_POSITION_THRESHOLD;
+import static incognito.teamcode.config.WorldSlideConstants.VELOCITY_STOP_THRESHOLD;
 import static incognito.teamcode.config.WorldSlideConstants.S_ENCODER_CENTER_ISH;
 
 import com.qualcomm.robotcore.hardware.DcMotor;

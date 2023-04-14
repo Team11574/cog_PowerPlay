@@ -31,6 +31,6 @@ public class Drivetrain extends SampleMecanumDrive {
     }
 
     public IMU getImu() {
-        return imu;
+        return this.imu;
     }
 }

@@ -43,16 +43,19 @@ import incognito.teamcode.config.DriveConstants;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
- * a = 0.05, s = 0.001,
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     //public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1); //(9, 0.1, 1);// ORIGINAL: all zeros
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7, 0, 0.005); //(9, 0.1, 1);// ORIGINAL: all zeros
+    //public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7, 0, 0.005); //(9, 0.1, 1);// ORIGINAL: all zeros
     //public static PIDCoefficients HEADING_PID = new PIDCoefficients(10, 0, 0);//(12, 0.2, 0.6); // ORIGINAL: all zeros
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0, 0);//(12, 0.2, 0.6); // ORIGINAL: all zeros 5 0.005 0.005
+    //public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0, 0);//(12, 0.2, 0.6); // ORIGINAL: all zeros 5 0.005 0.005
+    //public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(9, 0.1, 1);// ORIGINAL: all zeros
+    //public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0.2, 0.6); // ORIGINAL: all zeros
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);// ORIGINAL: all zeros
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0); // ORIGINAL: all zeros
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.481481481481; //1;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -63,12 +66,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(DriveConstants.MAX_ACCEL);
 
-    private final TrajectoryFollower follower;
-
-    private final DcMotorEx DT_frontLeft_M;
-    private final DcMotorEx DT_backLeft_M;
-    private final DcMotorEx DT_backRight_M;
-    private final DcMotorEx DT_frontRight_M;
+    private final DcMotorEx DT_frontLeft_M, DT_backLeft_M, DT_backRight_M, DT_frontRight_M;
     private final List<DcMotorEx> motors;
 
     protected final IMU imu;
@@ -77,7 +75,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private final List<Integer> lastEncPositions = new ArrayList<>();
     private final List<Integer> lastEncVels = new ArrayList<>();
 
-    private final HardwareMap hardwareMap;
+    private HardwareMap hardwareMap;
     private Telemetry telemetry;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
@@ -100,8 +98,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         if (telemetry != null)
             this.telemetry = telemetry;
 
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.1, 0.1, Math.toRadians(1)), .5); // TIMEOUT WAS 1
+        TrajectoryFollower follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+                new Pose2d(0.1, 0.1, Math.toRadians(1)), 1); // TIMEOUT WAS 1
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -149,7 +147,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
+        // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(
                 follower, HEADING_PID, batteryVoltageSensor,
@@ -207,7 +205,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
     }
 
-    // ADDED BY US
     public void modifyTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
         trajectorySequenceRunner.modifyTrajectorySequenceAsync(trajectorySequence);
     }

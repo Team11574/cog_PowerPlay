@@ -376,7 +376,7 @@ public class MotorGroup extends HardwareComponent {
         disabled = false;
         for (DcMotorEx motor : motors) {
             motor.setMotorEnable();
-            motor.setPower(0);
+            motor.setPower(RUN_TO_POSITION_POWER);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
     }

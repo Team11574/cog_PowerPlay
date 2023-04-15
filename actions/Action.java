@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 public class Action {
-    ArrayList<ActionType> actions = new ArrayList<>();
+    ArrayList<SubAction> actions = new ArrayList<>();
     public int index = -1;
     ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     boolean globalized = false;
@@ -17,8 +17,8 @@ public class Action {
         addAction(new Runner(function));
     }
 
-    public Action(ActionType actionType) {
-        addAction(actionType);
+    public Action(SubAction subAction) {
+        addAction(subAction);
     }
 
     public Action(Action action) {
@@ -34,14 +34,14 @@ public class Action {
     }
 
 
-    private Action addAction(ActionType actionType) {
-        actions.add(actionType);
+    private Action addAction(SubAction subAction) {
+        actions.add(subAction);
         return this;
     }
 
     private Action addAction(Action action) {
-        for (ActionType actionType : action.actions) {
-            addAction(actionType);
+        for (SubAction subAction : action.actions) {
+            addAction(subAction);
         }
         return this;
     }
@@ -50,8 +50,8 @@ public class Action {
         return then(new Runner(function));
     }
 
-    public Action then(ActionType actionType) {
-        return new Action(this).addAction(actionType);
+    public Action then(SubAction subAction) {
+        return new Action(this).addAction(subAction);
     }
 
     public Action then(Action a) {
@@ -78,7 +78,7 @@ public class Action {
         return new Action(this).addAction(new ConditionalRunner(function, condition));
     }
 
-    public Action doIf(ActionType action, Callable<Boolean> condition) {
+    public Action doIf(SubAction action, Callable<Boolean> condition) {
         return new Action(this).addAction(new ConditionalRunner(action, condition));
     }
 
@@ -106,7 +106,7 @@ public class Action {
 
     public void update() {
         if (index >= 0) {
-            ActionType currentAction = actions.get(index);
+            SubAction currentAction = actions.get(index);
             if (currentAction.isFinished(timer.time())) {
                 // End the current action
                 currentAction.end();
@@ -123,13 +123,13 @@ public class Action {
     }
 }
 
-abstract class ActionType {
+abstract class SubAction {
     public abstract boolean isFinished(double time);
     public void start() {}
     public void end() {}
 }
 
-class Runner extends ActionType {
+class Runner extends SubAction {
     Runnable function;
     public Runner (Runnable function) {
         this.function = function;
@@ -145,7 +145,7 @@ class Runner extends ActionType {
     }
 }
 
-class Condition extends ActionType {
+class Condition extends SubAction {
     Callable<Boolean> condition;
     public Condition (Callable<Boolean> condition) {
         this.condition = condition;
@@ -163,7 +163,7 @@ class Condition extends ActionType {
     }
 }
 
-class Delay extends ActionType {
+class Delay extends SubAction {
     double delay;
     public Delay (double delay) {
         this.delay = delay;
@@ -173,7 +173,7 @@ class Delay extends ActionType {
     }
 }
 
-class ConditionalRunner extends ActionType {
+class ConditionalRunner extends SubAction {
     Action action;
     Callable<Boolean> condition;
     boolean finished = false;
@@ -181,7 +181,7 @@ class ConditionalRunner extends ActionType {
         this(new Action(runnable), condition);
     }
 
-    public ConditionalRunner (ActionType action, Callable<Boolean> condition) {
+    public ConditionalRunner (SubAction action, Callable<Boolean> condition) {
         this(new Action(action), condition);
     }
 

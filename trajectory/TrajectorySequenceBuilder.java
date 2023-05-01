@@ -34,8 +34,8 @@ public class TrajectorySequenceBuilder {
     private final TrajectoryVelocityConstraint baseVelConstraint;
     private final TrajectoryAccelerationConstraint baseAccelConstraint;
 
-    private TrajectoryVelocityConstraint currentVelConstraint;
-    private TrajectoryAccelerationConstraint currentAccelConstraint;
+    protected TrajectoryVelocityConstraint currentVelConstraint;
+    protected TrajectoryAccelerationConstraint currentAccelConstraint;
 
     private final double baseTurnConstraintMaxAngVel;
     private final double baseTurnConstraintMaxAngAccel;
@@ -56,7 +56,7 @@ public class TrajectorySequenceBuilder {
     private boolean setAbsoluteTangent;
     private double absoluteTangent;
 
-    private TrajectoryBuilder currentTrajectoryBuilder;
+    protected TrajectoryBuilder currentTrajectoryBuilder;
 
     private double currentDuration;
     private double currentDisplacement;
@@ -280,7 +280,7 @@ public class TrajectorySequenceBuilder {
         return addPath(() -> currentTrajectoryBuilder.splineToSplineHeading(endPose, endHeading, velConstraint, accelConstraint));
     }
 
-    private TrajectorySequenceBuilder addPath(AddPathCallback callback) {
+    protected TrajectorySequenceBuilder addPath(AddPathCallback callback) {
         if (currentTrajectoryBuilder == null) newPath();
 
         try {
@@ -705,7 +705,7 @@ public class TrajectorySequenceBuilder {
         return displacementToTime(sequenceSegments, closestPoint.thisPathDisplacement);
     }
 
-    private interface AddPathCallback {
+    protected interface AddPathCallback {
         void run();
     }
 }
